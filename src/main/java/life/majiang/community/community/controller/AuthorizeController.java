@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 /**
@@ -41,7 +43,8 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                            HttpServletRequest request){
+                            HttpServletRequest request,
+                            HttpServletResponse response){//自动在形参里面注入response
                             //把HttpServletRequest作为参数传入到方法中，都快忘了HttpServletRequest这些了，springboot可以干嘛干嘛的
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         //设置accessTokenDTO
@@ -54,18 +57,24 @@ public class AuthorizeController {
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
 //        System.out.println(user.getName()+" "+user.getId());没用的打印
-        if(githubUser!=null){
+        if(githubUser!=null && githubUser.getId() != null){
             User user = new User();
             user.setAccountId(String.valueOf(githubUser.getId()));//Long 转成String类型:还支持其他平台所以用String
-            user.setToken(UUID.randomUUID().toString());
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
             user.setName(githubUser.getName());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
 
-            userMapper.insert(user);
-            //debug int i = 9 / 0;
+            userMapper.insert(user);//把user插入数据库
+            //以token作为依据（令牌）来绑定前端和后端登陆的依据,用它代替session
+            //写入cookie（在response里面）即把令牌放入cookie，再次登录时，检查cookie里面的“token”
+            //token每次随机生成，要怎么判断数据库里的token与重复登录者呢（每次登陆都录取用户信息）
+            response.addCookie(new Cookie("token",token));
+
+
             //登录成功，写cookie 和session【服务器端是银行，和session是银行账户，cookie是银行卡】
-            request.getSession().setAttribute("user",githubUser);//注册账户
+            //request.getSession().setAttribute("user",githubUser);//注册账户
             return "redirect:/";//"redirect:index";//这样是重定向到/index
         } else{
             //登录失败
