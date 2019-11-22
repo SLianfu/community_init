@@ -3,7 +3,7 @@ package life.majiang.community.community.dto;
 public class GithubUser {
 
     private String name;
-    private Long id;
+    private Long id; //这个是用来存放用户人数的？人数可能多 用long
     private String bio;
 
     public String getName() {
