@@ -46,11 +46,14 @@ public class AuthorizeController {
                             HttpServletRequest request,
                             HttpServletResponse response){//自动在形参里面注入response
                             //把HttpServletRequest作为参数传入到方法中，都快忘了HttpServletRequest这些了，springboot可以干嘛干嘛的
+        //Response{protocol=http/1.1, code=200, message=OK, url=https://github.com/login/oauth/access_token}
+
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         //设置accessTokenDTO
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
-        accessTokenDTO.setCode(code);
+        System.out.println("code:"+code);
+        accessTokenDTO.setCode(code);//code:fc08f9c69393bd14fa76
         accessTokenDTO.setRedirect_uri(redirectUri);
         accessTokenDTO.setState(state);
 
@@ -65,6 +68,7 @@ public class AuthorizeController {
             user.setName(githubUser.getName());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(githubUser.getAvatarUrl());
 
             userMapper.insert(user);//把user插入数据库
             //以token作为依据（令牌）来绑定前端和后端登陆的依据,用它代替session

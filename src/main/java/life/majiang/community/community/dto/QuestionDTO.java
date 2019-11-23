@@ -1,22 +1,10 @@
-package life.majiang.community.community.model;
-//这个包是 数据库模型，与数据库一一对应
+package life.majiang.community.community.dto;
+
+import life.majiang.community.community.model.User;
 import lombok.Data;
 
 @Data
-public class Question {
-    /**
-     * id int auto_increment,
-     * 	title varchar(50),
-     * 	description text,
-     * 	gmt_create BIGINT,
-     * 	gmt_modified bigint,
-     * 	creator int,
-     * 	comment_count int default 0,
-     * 	view_count int default 0,
-     * 	tag varchar(255),
-     * 	constraint question_pk
-     * 		primary key (id)
-     */
+public class QuestionDTO {
     private Long id;//database column QUESTION.ID
     private String title;//database column QUESTION.TITLE
     private Long gmtCreate;//database column QUESTION.GMT_CREATE
@@ -28,4 +16,7 @@ public class Question {
     private String tag ;//database column QUESTION.TAG
     private String description;// database column QUESTION.DESCRIPTION
 
-    }
+    //用private Long creator ; 关联user
+    private User user;//拿到头像
+}
+

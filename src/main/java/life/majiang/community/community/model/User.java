@@ -1,59 +1,17 @@
 package life.majiang.community.community.model;
 
-//这里也是个bean
+import lombok.Data;
+
+//这里也是个bean 这个是数据库里的（model）
+//加@Data:自动生成get set tostring hashcode RequiredArgsConstructor【lombok支持】
+@Data
 public class User {
-    private Long  id;
-    private String name;
-    private String accountId;
-    private String token;
-    private Long gmtCreate;
-    private Long gmtModified;
+    private Long  id;//用户id
+    private String name;//名称
+    private String accountId;//第三方登录的id
+    private String token;//第三方登录验证的令牌
+    private Long gmtCreate;//生成user的时间
+    private Long gmtModified;//修改时间
+    private String  avatarUrl;//头像链接？
 
-    public Long  getId() {
-        return id;
-    }
-
-    public void setId(Long  id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Long getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Long gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
 }
