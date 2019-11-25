@@ -86,6 +86,12 @@
             <version>1.18.10</version>
             <scope>provided</scope>
         </dependency>
+        <dependency><!--热部署，自动重启项目-->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
     <build>

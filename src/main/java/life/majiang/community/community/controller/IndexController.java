@@ -1,17 +1,17 @@
 package life.majiang.community.community.controller;
 
 import life.majiang.community.community.Service.QuestionService;
-import life.majiang.community.community.dto.QuestionDTO;
+import life.majiang.community.community.dto.PaginationDTO;
 import life.majiang.community.community.mapper.UserMapper;
 import life.majiang.community.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Controller
 public class IndexController {
@@ -22,7 +22,11 @@ public class IndexController {
     //@GetMapping("/hello")       //之前这里多敲了一个空格：ame="name "【不过可以在访问路径上加个空格，name值才可以有效果】
     @GetMapping("/")//相当于不输入任何路径
     public String index(HttpServletRequest request ,
-                            Model model){
+                            Model model,
+                        @RequestParam(name = "page",defaultValue = "1") Integer page,
+                        @RequestParam(name = "size",defaultValue = "3") Integer size
+
+    ){
         //把浏览器中传过来的值，放到model里
         //model.addAttribute("name" , name);
         Cookie[] cookies = request.getCookies();
@@ -42,12 +46,20 @@ public class IndexController {
                 }*/
             }
         }
-        List<QuestionDTO> questionList = questionService.list();//现在返回的是带有user对象的questionlist
+        //分页处理：
+        PaginationDTO pagination  = questionService.list(page,size);
+
+        //List<QuestionDTO> questionList = questionService.list();//现在返回的是带有user对象的questionlist
         //List<QuestionDTO> questionList1 = questionMapper.list();
         //questionMapper是针对question这张表的，并不去依赖user这张表
         //所以说他不能返回QuestionDTO(里面包含user对象)
         //所以这个时候就提炼出一个模型：service层
-        model.addAttribute("questions",questionList);
+
+        /*这里修改一个QuestionDTO的描述，用于测试
+        for (QuestionDTO questionDTO : questionList) {
+            questionDTO.setDescription("resetsdfaa");
+        }*/
+        model.addAttribute("pagination",pagination);
 
         return "index";
     }
