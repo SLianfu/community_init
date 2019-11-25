@@ -12,6 +12,7 @@ public class User {
     private String token;//第三方登录验证的令牌
     private Long gmtCreate;//生成user的时间
     private Long gmtModified;//修改时间
+    private String bio;//描述
     private String  avatarUrl;//头像链接？
 
 }

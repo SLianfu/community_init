@@ -64,7 +64,7 @@ public class AuthorizeController {
             User user = new User();
             user.setAccountId(String.valueOf(githubUser.getId()));//Long 转成String类型:还支持其他平台所以用String
             String token = UUID.randomUUID().toString();
-            user.setToken(token);
+            user.setToken(token);//用来唯一标识cookie
             user.setName(githubUser.getName());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());

@@ -14,24 +14,11 @@ public class PaginationDTO {
     private boolean showEndPage;//显示最后一页
     private Integer page;//当前页数
     private List<Integer> pages = new ArrayList<>();//分页栏要显示的是那几页 的集合
+    //不同的用户有不同的totalPage以及所有的用户总totalPage；
     private  Integer totalPage;//总共有多少页数
 
     //设置分页逻辑
-    public void setPagination(Integer totalCount, Integer page, Integer size) {
-        //如果总问题数tatalCoutn 取模 要显示的页数size 不为0 ，则总页数要加一
-        if (totalCount % size == 0){
-            totalPage = totalCount / size;
-        } else {
-            totalPage = totalCount / size + 1;
-        }
-
-        //如果
-        if (page < 1){
-            page = 1;
-        }
-        if (page > totalPage){
-            page = totalPage;
-        }
+    public void setPagination(Integer totalPage, Integer page) {
         this.page = page;//将形参传递给PaginationDTO，目前处于第几分页
         //【哦哦，这里出问题了，没有传参】
         this.totalPage = totalPage;

@@ -25,7 +25,7 @@ public class PublishController {
 
     @PostMapping("/publish")
     public String doPublish(
-            @RequestParam("title") String title,
+            @RequestParam("title") String title,//这里用请求域参数传递形参RequestParam
             @RequestParam("description") String description,
             @RequestParam("tag") String tag,
             HttpServletRequest request,

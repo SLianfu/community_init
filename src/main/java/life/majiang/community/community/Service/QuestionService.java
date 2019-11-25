@@ -29,14 +29,20 @@ public class QuestionService {
 
         PaginationDTO paginationDTO = new PaginationDTO();//新建一个分页对象
         Integer totalCount = questionMapper.count();//查出所有问题数
-        paginationDTO.setPagination(totalCount,page,size);//通过三个参数，计算 分页对象 一些分页逻辑
-
-        if (page < 1 ){
+        Integer totalPage;//总共有多少页数
+        //如果总问题数tatalCoutn 取模 要显示的页数size 不为0 ，则总页数要加一
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+        if (page < 1) {
             page = 1;
         }
-        if (page > paginationDTO.getTotalPage()){
-            page = paginationDTO.getTotalPage();
+        if (page > totalPage) {
+            page = totalPage;
         }
+        paginationDTO.setPagination(totalPage,page);//通过三个参数，计算 分页对象 一些分页逻辑
         //size*(page-1)通过公式，计算偏移量:如第二页，开始显示的元素是 3*（2-1）= 3;偏移量为3开始元素是4
         Integer offset = size * (page - 1);
 
@@ -48,6 +54,52 @@ public class QuestionService {
             //根据问题的发布者找到 user
            User user =  userMapper.findById(question.getCreator());
            //要把question 转成 DTO
+            QuestionDTO questionDTO = new QuestionDTO();
+            //把question里的内容 放到questionDTO【1，古老方法】【2，用工具】
+//            questionDTO.setId(question.getId());【1】
+            BeanUtils.copyProperties(question,questionDTO);
+            //直接将source对象的属性复制到target【通过反射】
+
+            //设置dto里面的user
+            questionDTO.setUser(user);
+            questionDTOList.add(questionDTO);//把设置了user的questionDTO对象加入到list
+
+        }
+        //重新封装的paginationDTO，将查询出的问题条目集合questionDTOList放入分页对象
+        paginationDTO.setQuestions(questionDTOList);
+        return paginationDTO;
+    }
+
+    public PaginationDTO list(Long userId, Integer page, Integer size) {
+        PaginationDTO paginationDTO = new PaginationDTO();//新建一个分页对象
+        Integer totalCount = questionMapper.countByUserId(userId);//根据用户id查出所有问题数
+        Integer totalPage;//总共有多少页数
+        //如果总问题数tatalCoutn 取模 要显示的页数size 不为0 ，则总页数要加一
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > totalPage) {
+            page = totalPage;
+        }
+        paginationDTO.setPagination(totalPage,page);//通过三个参数，计算 分页对象 一些分页逻辑
+
+
+        //size*(page-1)通过公式，计算偏移量:如第二页，开始显示的元素是 3*（2-1）= 3;偏移量为3开始元素是4
+        Integer offset = size * (page - 1);//【-5，page = 0】
+
+        List<Question> questions = questionMapper.listByUserId(userId,offset,size);//questionMapper.list();
+        //返回的是list，这里新建一个list
+        List<QuestionDTO> questionDTOList = new ArrayList<>();
+
+        for (Question question : questions) {
+            //根据问题的发布者找到 user
+            User user =  userMapper.findById(question.getCreator());
+            //要把question 转成 DTO
             QuestionDTO questionDTO = new QuestionDTO();
             //把question里的内容 放到questionDTO【1，古老方法】【2，用工具】
 //            questionDTO.setId(question.getId());【1】
