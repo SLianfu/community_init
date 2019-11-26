@@ -26,11 +26,14 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading" th:text="${question.title}"></h4>
+                    <h4 class="media-heading">
+                        <a th:href="@{'/question/'+${question.id}}" th:text="${question.title}"></a>
+                    </h4>
                     <span th:text="${question.description}"></span><br><!--加个换行可以-->
                     <span class="text-desc"><span th:text="${question.commentCount}"></span> 个评论•
                         <span th:text="${question.viewCount}"></span> 次浏览 •
-                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-mm-dd HH:mm')}"></span></span>
+                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-mm-dd HH:mm')}"></span>
+                    </span>
                     <!--或者直接这样<spanth:text="${#dates.format(question.gmtCreate)}"></span>-->
                 </div>
             </div>
@@ -51,7 +54,7 @@
                     <!--高亮-->
                     <li th:each="page:${pagination.pages}" th:class="${pagination.page==page}?'active':''">
                         <a th:href="@{/(page=${page})}" th:text="${page}"></a>
-                       <!-- <span th:text="${pagination.page这个是一直等于1的}"></span>-->
+                        <!-- <span th:text="${pagination.page这个是一直等于1的}"></span>-->
                     </li>
 
                     <li th:if="${pagination.showNext}"><!--下一页-->
@@ -67,7 +70,6 @@
                 </ul>
             </nav>
         </div>
-
 
 
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">

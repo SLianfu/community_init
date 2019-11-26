@@ -21,60 +21,64 @@
 
             <!--问题分页-->
             <div class="media" th:each="question : ${pagination.questions}">
-            <div class="media-left" >
-                <a href="#">
-                    <img class=" media-object-self media-object img-rounded "
-                         th:src="${question.user.avatarUrl}">
-                </a>
-            </div>
-            <div class="media-body">
-                <h4 class="media-heading" th:text="${question.title}"></h4>
-                <span class="text-desc"><span th:text="${question.commentCount}"></span> 个评论•
+                <div class="media-left">
+                    <a href="#">
+                        <img class=" media-object-self media-object img-rounded "
+                             th:src="${question.user.avatarUrl}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" th:text="${question.title}"></h4>
+                    <span class="text-desc"><span th:text="${question.commentCount}"></span> 个评论•
                         <span th:text="${question.viewCount}"></span> 次浏览 •
                         <span th:text="${#dates.format(question.gmtCreate,'yyyy-mm-dd HH:mm')}"></span></span>
-                <!--或者直接这样<spanth:text="${#dates.format(question.gmtCreate)}"></span>-->
+                    <!--或者直接这样<spanth:text="${#dates.format(question.gmtCreate)}"></span>-->
+                </div>
             </div>
-        </div>
-        <!--分页组件【页码传递有问题】：要先获取当前页面的路径-->
+            <!--分页组件【页码传递有问题】：要先获取当前页面的路径-->
             <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li th:if="${pagination.showFirstPage}"><!--首页-->
-                    <a th:href="@{'/profile/'+${section}(page=${1})}" aria-label="Previous">
-                        <span aria-hidden="true">&lt;&lt;</span>
-                    </a>
-                </li>
-                <li th:if="${pagination.showPrevious}"><!--上一页-->
-                    <a th:href= "@{'/profile/'+${section}(page=${pagination.page-1})}" ><!--/(page=${pagination.page-1})}-->
-                        <span aria-hidden="true">&lt;</span>
-                    </a>
-                </li>
+                <ul class="pagination">
+                    <li th:if="${pagination.showFirstPage}"><!--首页-->
+                        <a th:href="@{'/profile/'+${section}(page=${1})}" aria-label="Previous">
+                            <span aria-hidden="true">&lt;&lt;</span>
+                        </a>
+                    </li>
+                    <li th:if="${pagination.showPrevious}"><!--上一页-->
+                        <a th:href="@{'/profile/'+${section}(page=${pagination.page-1})}">
+                            <!--/(page=${pagination.page-1})}-->
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
 
-                <!--高亮-->
-                <li th:each="page:${pagination.pages}" th:class="${pagination.page==page}?'active':''">
-                    <a th:href="@{'/profile/'+${section}(page=${page})}" th:text="${page}"></a><!--@{'/profile/'+${section}(page=${page})}-->
-                   <!-- <a th:href="/(page=${page})}" th:text="${page}"></a>-->
-                    <!-- <span th:text="${pagination.page这个是一直等于1的}"></span>-->
-                </li>
+                    <!--高亮-->
+                    <li th:each="page:${pagination.pages}" th:class="${pagination.page==page}?'active':''">
+                        <a th:href="@{'/profile/'+${section}(page=${page})}" th:text="${page}"></a>
+                        <!--@{'/profile/'+${section}(page=${page})}-->
+                        <!-- <a th:href="/(page=${page})}" th:text="${page}"></a>-->
+                        <!-- <span th:text="${pagination.page这个是一直等于1的}"></span>-->
+                    </li>
 
-                <li th:if="${pagination.showNext}"><!--下一页-->
-                    <a th:href="@{'/profile/'+${section}(page=${pagination.page+1})}" aria-label="Previous">
-                        <span aria-hidden="true">&gt;</span>
-                    </a>
-                </li>
-                <li th:if="${pagination.showEndPage}">
-                    <a th:href="@{'profile/'+${section}(page=${pagination.totalPage})}" aria-label="Previous">
-                        <span aria-hidden="true">&gt;&gt;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+                    <li th:if="${pagination.showNext}"><!--下一页-->
+                        <a th:href="@{'/profile/'+${section}(page=${pagination.page+1})}" aria-label="Previous">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                    <li th:if="${pagination.showEndPage}">
+                        <a th:href="@{'profile/'+${section}(page=${pagination.totalPage})}" aria-label="Previous">
+                            <span aria-hidden="true">&gt;&gt;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
 
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
             <div class="list-group section">
-                    <!--什么时候选中：sectionName相等的时候-->
-                <a href="/profile/questions" th:class="${section=='questions'}?'active list-group-item':'list-group-item'">我的问题</a><!--这里可以做一下高亮效果，或者别的效果-->
+                <!--什么时候选中：sectionName相等的时候-->
+                <a href="/profile/questions"
+                   th:class="${section=='questions'}?'active list-group-item':'list-group-item'">我的问题</a>
+                <!--这里可以做一下高亮效果，或者别的效果-->
                 <a href="/profile/replies" th:class="${section=='replies'}?'active list-group-item':'list-group-item'">
                     最新回复
                     <span class="badge">15</span>

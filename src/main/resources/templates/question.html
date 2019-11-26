@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${question.title}"></title><!--刚开始样式没有加载：-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/><!--css/bootstrap.min.css：是与profile.html同级目录,
+    http://localhost:8887/profile/questions:目录没有这些样式，加上/：表示这些资源的引入不是基于当前文件目录-->
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+
+<div th:insert="navigation::nav"></div>
+<div class="container-fluid main profile">
+    <div>
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h3><span th:text="${question.title}"></span></h3>
+            <span class="text-desc">
+                作者：<span th:text="${question.user.name}"></span> |
+                阅读数： <span th:text="${question.viewCount}"></span> |
+                发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-mm-dd HH:mm')}"></span>
+            </span>
+            <hr ><!--class="col-lg-12 col-md-12 col-sm-12 col-xs-12"-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${question.description}"></div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <a th:href="@{'/publish'+${question.id}}" class="community-menu" th:if="${session.user!=null && session.user.id == question.creator}">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true" ></span>
+                编辑
+            </a>
+        </div>
+
+
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                <h4>发起人</h4>
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class=" media-object-self media-object img-circle "
+                                 th:src="${question.user.avatarUrl}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h5 class="media-heading">
+                            <span th:text="${question.user.name}"></span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                <h4>相关问题</h4>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+</html>

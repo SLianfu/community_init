@@ -1,5 +1,6 @@
 package life.majiang.community.community.controller;
 
+import life.majiang.community.community.Service.UserService;
 import life.majiang.community.community.dto.AccessTokenDTO;
 import life.majiang.community.community.dto.GithubUser;
 import life.majiang.community.community.mapper.UserMapper;
@@ -39,6 +40,8 @@ public class AuthorizeController {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
@@ -61,16 +64,16 @@ public class AuthorizeController {
         GithubUser githubUser = githubProvider.getUser(accessToken);
 //        System.out.println(user.getName()+" "+user.getId());没用的打印
         if(githubUser!=null && githubUser.getId() != null){
+            //要验证数据库中是否有改用户
             User user = new User();
             user.setAccountId(String.valueOf(githubUser.getId()));//Long 转成String类型:还支持其他平台所以用String
             String token = UUID.randomUUID().toString();
             user.setToken(token);//用来唯一标识cookie
             user.setName(githubUser.getName());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatarUrl());
+            user.setBio(githubUser.getBio());
+            userService.createOrUpdate(user);
 
-            userMapper.insert(user);//把user插入数据库
             //以token作为依据（令牌）来绑定前端和后端登陆的依据,用它代替session
             //写入cookie（在response里面）即把令牌放入cookie，再次登录时，检查cookie里面的“token”
             //token每次随机生成，要怎么判断数据库里的token与重复登录者呢（每次登陆都录取用户信息）
@@ -85,5 +88,18 @@ public class AuthorizeController {
             return "redirect:/";
 
         }
+    }
+
+    //退出登录
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        //删除cookie
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);//重新写入，将之前的覆盖
+
+        return "redirect:/";
     }
 }
