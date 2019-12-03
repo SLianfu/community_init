@@ -1,0 +1,1 @@
+alter table QUESTION alter column CREATOR long(10);

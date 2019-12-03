@@ -35,3 +35,6 @@ CREATE TABLE USER
 '''bash
 mvn flyway:migrate
 '''
+'''mybatis
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+'''

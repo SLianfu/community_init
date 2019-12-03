@@ -19,6 +19,7 @@
             <hr>
 
             <form action="/publish" method="post">
+                <input type="hidden" name="question_id" th:value="${question_id}"><!--这样就可以把question_id通过form传递回controller-->
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）</label>
                     <input type="text" class="form-control" th:value="${title}" id="title" name="title" placeholder="问题标题。。。">

@@ -72,6 +72,7 @@ public class AuthorizeController {
             user.setName(githubUser.getName());
             user.setAvatarUrl(githubUser.getAvatarUrl());
             user.setBio(githubUser.getBio());
+            //更新或者创建用户
             userService.createOrUpdate(user);
 
             //以token作为依据（令牌）来绑定前端和后端登陆的依据,用它代替session

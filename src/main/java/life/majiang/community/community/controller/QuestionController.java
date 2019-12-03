@@ -15,7 +15,7 @@ public class QuestionController {
     private QuestionService questionService;
 
     @GetMapping("/question/{id}")
-    public String question(@PathVariable(name = "id") Long id,
+    public String question(@PathVariable(name = "id") Integer id,
                 Model model ){
         //拿到id 先到数据库中查询id,同时希望返回QuestionDTO对象，（方便封装）
         QuestionDTO questionDTO =  questionService.getById(id);
