@@ -19,6 +19,10 @@ public class QuestionController {
                 Model model ){
         //拿到id 先到数据库中查询id,同时希望返回QuestionDTO对象，（方便封装）
         QuestionDTO questionDTO =  questionService.getById(id);
+
+        //累加阅读数
+        questionService.incView(id);
+
         //要把questionDTO传到页面上去，用到model
         model.addAttribute("question",questionDTO);//一个question
 

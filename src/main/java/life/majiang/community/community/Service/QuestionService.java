@@ -2,6 +2,9 @@ package life.majiang.community.community.Service;
 
 import life.majiang.community.community.dto.PaginationDTO;
 import life.majiang.community.community.dto.QuestionDTO;
+import life.majiang.community.community.exception.CustomizeErrorCode;
+import life.majiang.community.community.exception.CustomizeException;
+import life.majiang.community.community.mapper.QuestionExtMapper;
 import life.majiang.community.community.mapper.QuestionMapper;
 import life.majiang.community.community.mapper.UserMapper;
 import life.majiang.community.community.model.Question;
@@ -23,6 +26,9 @@ import java.util.List;
 public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -133,6 +139,11 @@ public class QuestionService {
     public QuestionDTO getById(Integer id) {
         //通过questionMapper去调用getQeustionById(id)
         Question question = questionMapper.selectByPrimaryKey(id);
+
+        //加一个判断，是否为空
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
         //加上用户_根据question.creator
@@ -161,7 +172,30 @@ public class QuestionService {
             QuestionExample example = new QuestionExample();
             example.createCriteria()
                     .andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(updateQuestion, example);
+            int updated = questionMapper.updateByExampleSelective(updateQuestion, example);
+            //用返回值去验证是否更新成功
+            //进行封装
+            if (updated != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
+    }
+
+    //增加阅读数
+    public void incView(Integer id) {
+        //原始版：没有考虑并发，【这里是用阅读数值覆盖数据库值，用数据库值累加会更好】
+        //首先要拿到数据库里的question
+        /*Question question = questionMapper.selectByPrimaryKey(id);
+        Question updateQuestion = new Question();
+        updateQuestion.setViewCount(question.getViewCount() + 1);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria()
+                .andIdEqualTo(id);
+        questionMapper.updateByExampleSelective(updateQuestion, questionExample);
+        */
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);//这里是每次累加一个
+        questionExtMapper.incView(question);
     }
 }
