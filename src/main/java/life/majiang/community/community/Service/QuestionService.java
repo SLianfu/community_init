@@ -136,7 +136,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         //通过questionMapper去调用getQeustionById(id)
         Question question = questionMapper.selectByPrimaryKey(id);
 
@@ -158,6 +158,10 @@ public class QuestionService {
             //创建
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
+            //设置默认值
+            question.setViewCount(0);
+            question.setCommentCount(0);
+            question.setLikeCount(0);
             questionMapper.insert(question);
         }else {
             //更新
@@ -182,7 +186,7 @@ public class QuestionService {
     }
 
     //增加阅读数
-    public void incView(Integer id) {
+    public void incView(Long id) {
         //原始版：没有考虑并发，【这里是用阅读数值覆盖数据库值，用数据库值累加会更好】
         //首先要拿到数据库里的question
         /*Question question = questionMapper.selectByPrimaryKey(id);

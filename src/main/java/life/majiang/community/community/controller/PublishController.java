@@ -23,7 +23,7 @@ public class PublishController {
 
     //修改发布的问题：先得到question的id，（在路径上）
     @GetMapping("/publish/{question_id}")
-    public String edit(@PathVariable(name = "question_id") Integer question_id,Model model){
+    public String edit(@PathVariable(name = "question_id") Long question_id,Model model){
         //通过id拿到question
         QuestionDTO question = questionService.getById(question_id);//这里只需要拿出数据来就可以了
         //通过question拿到 要修改的question对象，后面可以通过模型去绑定表单
@@ -44,7 +44,7 @@ public class PublishController {
             @RequestParam(value = "title",required = false) String title,//这里用请求域参数传递形参RequestParam
             @RequestParam(value = "description",required = false) String description,
             @RequestParam(value = "tag",required = false) String tag,
-            @RequestParam(value = "question_id",required = false) Integer question_id,//这个id是可以为空的，空就创建question
+            @RequestParam(value = "question_id",required = false) Long question_id,//这个id是可以为空的，空就创建question
             HttpServletRequest request,
             Model model) {
         model.addAttribute("title", title);

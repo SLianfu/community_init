@@ -19,6 +19,8 @@ public class SessionIntercetor implements HandlerInterceptor {
     @Autowired
     private UserMapper userMapper;
 
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
@@ -35,6 +37,7 @@ public class SessionIntercetor implements HandlerInterceptor {
                     //User user = userMapper.findByToken(token);//token怎么回去呢？传入httpservletresponse
                     if (users.size() != 0) {  //验证前端的工作情况
                         request.getSession().setAttribute("user", users.get(0));
+                        User user = (User) request.getSession().getAttribute("user");
                         //前端就可以通过会话级的（页面级）数据去判断登录
                     }
                     break;

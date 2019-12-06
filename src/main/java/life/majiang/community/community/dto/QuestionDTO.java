@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class QuestionDTO {
-    private Integer id;//database column QUESTION.ID
+    private Long id;//database column QUESTION.ID
     private String title;//database column QUESTION.TITLE
     private Long gmtCreate;//database column QUESTION.GMT_CREATE
     private Long gmtModified;//column QUESTION.GMT_MODIFIED
