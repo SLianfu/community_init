@@ -9,6 +9,16 @@
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
 </head>
+<script type="application/javascript">
+    window.onload = function (ev) {
+        /*前端debug：加一个字段：debuger;*/
+        var closable = window.localStorage.getItem("closable");
+        if (closable == "true"){
+            window.close();/*关闭这个新窗口*/
+            window.localStorage.removeItem("closable");
+        }
+    }
+</script>
 <body>
 
 <div th:insert="navigation::nav"></div>

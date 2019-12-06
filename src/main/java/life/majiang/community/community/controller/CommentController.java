@@ -1,7 +1,7 @@
 package life.majiang.community.community.controller;
 
 import life.majiang.community.community.Service.CommentService;
-import life.majiang.community.community.dto.CommentDTO;
+import life.majiang.community.community.dto.CommentCreateDTO;
 import life.majiang.community.community.dto.ResultDTO;
 import life.majiang.community.community.exception.CustomizeErrorCode;
 import life.majiang.community.community.model.Comment;
@@ -30,22 +30,27 @@ public class CommentController {
 
     @ResponseBody//返回的是json,要加这个注解
     @RequestMapping(value = "/comment",method = RequestMethod.POST)
-    public Object post(@RequestBody CommentDTO commentDTO,
+    public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
                        HttpServletRequest request){
         //通过注入request拿到session 然后拿到user
         User user = (User)request.getSession().getAttribute("user");
         if (user == null){
             return ResultDTO.errorOf(CustomizeErrorCode.NO_LOGIN);
         }
+        //判断回复内容是否为空，后端校验
+//        if (commentCreateDTO == null || commentCreateDTO.getContent() == null || commentCreateDTO.getContent() ==""){
+        if (commentCreateDTO == null || commentCreateDTO.getContent().isEmpty()){
+            return ResultDTO.errorOf(CustomizeErrorCode.CONTENT_IS_EMPTY);
+        }
 
         //@RequestBody CommentDTO commentDTO自动把传入过来的json的key-value:赋值到commentDTO
         Comment comment = new Comment();
-        comment.setParentId(commentDTO.getParentId());//可能不存在（已经被删除）
+        comment.setParentId(commentCreateDTO.getParentId());//可能不存在（已经被删除）
         //然后要判断ParentId是否为空，而ParentId依赖getType（1是回复问题，2是回复评论）
         //这里要新创建一个枚举类型，去判断type
 
-        comment.setContent(commentDTO.getContent());
-        comment.setType(commentDTO.getType());
+        comment.setContent(commentCreateDTO.getContent());
+        comment.setType(commentCreateDTO.getType());
         comment.setGmtCreate(System.currentTimeMillis());
         comment.setGmtModified(System.currentTimeMillis());
         //这里要得到session
