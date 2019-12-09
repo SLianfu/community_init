@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/community.css">
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/moment.js" type="application/javascript"></script>
     <script src="/js/community.js" type="application/javascript"></script>
 </head>
 <body>
@@ -25,7 +26,7 @@
                 <span class="text-desc">
                     作者：<span th:text="${question.user.name}"></span> |
                     阅读数： <span th:text="${question.viewCount}"></span> |
-                    发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-mm-dd HH:mm')}"></span>
+                    发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>
                 </span>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <!--class="col-lg-12 col-md-12 col-sm-12 col-xs-12"-->
@@ -53,59 +54,84 @@
                                      th:src="${comment.user.avatarUrl}">
                             </a>
                         </div>
-                        <div class="media-body">
+                        <div class="media-body" th:id="${'comment-body-'+comment.id}">
                             <h5 class="media-heading">
                                 <span th:text="${comment.user.name}"></span>
                             </h5>
                             <div th:text="${comment.content}"></div><!--文本内容-->
                             <div class="menu">
                                 <span class="glyphicon glyphicon-thumbs-up icon"></span>
-                                <span class="glyphicon glyphicon-comment icon"></span>
-                                <span class="pull-right"
-                                      th:text="${#dates.format(comment.gmtCreate,'yyyy-mm-dd')}"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                <!--二级评论有很多，用级联,有回复问题的评论，和回复评论的评论，这里直接用data-->
+                                <!--th:id="${'comment-'+comment.id}"  data-id="66"是当前评论的id-->
+                                <!--this 打印时 == span这个标签-->
+                                <span th:data-id="${comment.id}"
+                                      onclick="collapseComments(this)" class="comment-icon">
+                                     <span class="glyphicon glyphicon-comment"  ></span>
+                                    <span  th:text="${comment.commentCount}"></span>
+                                </span>
 
-            <!--回复输入框-->
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <h4>
-                    提交回复
-                </h4>
-                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
-                    <div class="media">
-                        <div class="media-left">
-                            <a href="#">
-                                <img class=" media-object-self media-object img-rounded"
-                                     th:src="${question.user.avatarUrl}">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h5 class="media-heading">
-                                <span th:text="${question.user.name}"></span>
-                            </h5>
+                                <!--commentCount:获取评论数，要改数据库-->
+                                <span class="pull-right"
+                                      th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd')}"></span>
+                            </div>
+                            <!--当点击collapseComments，触发事件，获取到th:id="${'comment-body-'+comment.id}"这个元素，然后往这个元素追加标签。把二级评论的元素追加到menu这个div后面-->
+
+                            <!--二级评论-->
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments"
+                                 th:id="${'comment-'+comment.id}">
+                                <!--这个div的id是comment-评论id-->
+
+                                <!--//二级评论在js那里了-->
+                                <!--二级评论
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments" th:each="comment : ${commnets}">
+                                    &lt;!&ndash;头像&ndash;&gt;
+                                    <div class="media">
+                                        <div class="media-left">
+                                                <img class=" media-object-self media-object img-rounded"
+                                                     th:src="${comment.user.avatarUrl}">
+                                        </div>
+                                        <div class="media-body">
+                                            <h5 class="media-heading" th:text="${comment.user.name}"></h5>
+
+                                            <div th:text="${comment.content}"></div>&lt;!&ndash;文本内容&ndash;&gt;
+                                            <div class="menu">
+                                                <span class="pull-right"
+                                                      th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd')}"></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    -->
+                                <!--把这个评论框放入二级评论div中-->
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <!--把这个标签的id设置成动态的-->
+                                    <input type="text" class="form-control" placeholder="评论一下。。"
+                                           th:id="${'input-'+comment.id}">
+                                    <button type="button" class="btn btn-success pull-right btn" onclick="comment(this)"
+                                            th:data-id="${comment.id}">评论
+                                    </button>
+                                    <!--通过data这个属性，拿到comment的id，通过'input-'+comment.id}拿到评论的内容，传入的参数是this：整个标签-->
+                                </div>
+
+                            </div>
+
                         </div>
                     </div>
-                    <input type="hidden" id="question_id" th:value="${question.id}">
-                    <!--这里也给一个id属性,然后通过id获取文本域的内容-->
-                    <textarea class="form-control comment" rows="6" id="comment_content"></textarea>
-                    <!--回复这里绑定一个方法,通过post方法获取questionId 的值：id=”question_id“-->
-                    <button type="button" class="btn btn-success btn-comment" onclick="post()">回复</button>
                 </div>
             </div>
         </div>
 
-        <!--右边信息块-->
-        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                <h4>发起人</h4>
+        <!--回复输入框-->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h4>
+                提交回复
+            </h4>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
                 <div class="media">
                     <div class="media-left">
                         <a href="#">
-                            <img class=" media-object-self media-object img-rounded "
+                            <img class=" media-object-self media-object img-rounded"
                                  th:src="${question.user.avatarUrl}">
                         </a>
                     </div>
@@ -115,14 +141,40 @@
                         </h5>
                     </div>
                 </div>
+                <input type="hidden" id="question_id" th:value="${question.id}">
+                <!--这里也给一个id属性,然后通过id获取文本域的内容-->
+                <textarea class="form-control comment" rows="6" id="comment_content"></textarea>
+                <!--回复这里绑定一个方法,通过post方法获取questionId 的值：id=”question_id“-->
+                <button type="button" class="btn btn-success btn-comment" onclick="post()">回复</button>
             </div>
-            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                <h4>相关问题</h4>
-            </div>
-
         </div>
     </div>
+
+    <!--右边信息块-->
+    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+            <h4>发起人</h4>
+            <div class="media">
+                <div class="media-left">
+                    <a href="#">
+                        <img class=" media-object-self media-object img-rounded "
+                             th:src="${question.user.avatarUrl}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h5 class="media-heading">
+                        <span th:text="${question.user.name}"></span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+        <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+            <h4>相关问题</h4>
+        </div>
+
+    </div>
+</div>
 
 
 </body>

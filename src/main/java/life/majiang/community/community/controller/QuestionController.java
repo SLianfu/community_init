@@ -4,6 +4,7 @@ import life.majiang.community.community.Service.CommentService;
 import life.majiang.community.community.Service.QuestionService;
 import life.majiang.community.community.dto.CommentDTO;
 import life.majiang.community.community.dto.QuestionDTO;
+import life.majiang.community.community.enums.CommentTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +28,7 @@ public class QuestionController {
         //拿到id 先到数据库中查询id,同时希望返回QuestionDTO对象，（方便封装）
         QuestionDTO questionDTO =  questionService.getById(id);
 
-        List<CommentDTO> comments = commentService.listByQuestionId(id);
+        List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
 
         //累加阅读数
         questionService.incView(id);

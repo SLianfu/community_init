@@ -4,10 +4,7 @@ import life.majiang.community.community.dto.CommentDTO;
 import life.majiang.community.community.enums.CommentTypeEnum;
 import life.majiang.community.community.exception.CustomizeErrorCode;
 import life.majiang.community.community.exception.CustomizeException;
-import life.majiang.community.community.mapper.CommentMapper;
-import life.majiang.community.community.mapper.QuestionExtMapper;
-import life.majiang.community.community.mapper.QuestionMapper;
-import life.majiang.community.community.mapper.UserMapper;
+import life.majiang.community.community.mapper.*;
 import life.majiang.community.community.model.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,9 @@ public class CommentService {
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private CommentExtMapper commentExtMapper;
 
     @Autowired
     private QuestionMapper questionMapper;
@@ -59,7 +59,15 @@ public class CommentService {
             if (dbComment == null){
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
+
             commentMapper.insert(comment);//不为空就插入这条评论进入数据库
+            //增加评论数,之前的评论数就不管了
+            //
+            Comment parentComment = new Comment();
+            parentComment.setId(comment.getParentId());
+
+            parentComment.setCommentCount(1);
+            commentExtMapper.incCommentCount(parentComment);
 
         }else {
             //回复问题
@@ -73,12 +81,12 @@ public class CommentService {
         }
     }
 
-    public List<CommentDTO> listByQuestionId(Long id) {
+    public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
         //拿到所有的usermapper
         CommentExample commentExample = new CommentExample();
         commentExample.createCriteria()
                 .andParentIdEqualTo(id)
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+                .andTypeEqualTo(type.getType());
         //怎么让时间倒叙？,这里应该是按照数据库拼接上去的
         commentExample.setOrderByClause("gmt_create desc");
 

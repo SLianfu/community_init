@@ -33,7 +33,7 @@
                     </h4>
                     <span class="text-desc"><span th:text="${question.commentCount}"></span> 个评论•
                         <span th:text="${question.viewCount}"></span> 次浏览 •
-                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-mm-dd HH:mm')}"></span></span>
+                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-MMMM-dd HH:mm')}"></span></span>
                     <!--或者直接这样<spanth:text="${#dates.format(question.gmtCreate)}"></span>-->
                 </div>
             </div>
