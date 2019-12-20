@@ -24,10 +24,12 @@ public class QuestionController {
     private CommentService commentService;
 
     @GetMapping("/question/{id}")
-    public String question(@PathVariable(name = "id") Long id,                Model model ){
+    public String question(@PathVariable(name = "id") Long id,  Model model ){
         //拿到id 先到数据库中查询id,同时希望返回QuestionDTO对象，（方便封装）
         QuestionDTO questionDTO =  questionService.getById(id);
+        List<QuestionDTO> relatedQuestions = questionService.selectRelated(questionDTO);
 
+        //通过question的id和评论问题的enum,那到评论的列表
         List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
 
         //累加阅读数
@@ -36,6 +38,7 @@ public class QuestionController {
         //要把questionDTO传到页面上去，用到model
         model.addAttribute("question",questionDTO);//一个question
         model.addAttribute("commnets",comments);
+        model.addAttribute("relatedQuestions",relatedQuestions);
 
         return "question";
     }

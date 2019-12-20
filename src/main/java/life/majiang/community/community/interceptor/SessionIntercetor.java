@@ -24,7 +24,7 @@ public class SessionIntercetor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length != 0) {
+        if (cookies != null && cookies.length != 0) {//如果cookies为空，那user也为空
             //这里用数据库检验的方式，成本高（小用户量还行）【以后可以用redis方式去做】
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {

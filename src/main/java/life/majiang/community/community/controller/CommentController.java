@@ -56,6 +56,7 @@ public class CommentController {
         //这里要得到session
         comment.setCommentator(user.getId());//user.getId()评论人id，通过session得到（如果已经登陆的话）
         comment.setLikeCount(0L);
+        comment.setCommentCount(0);
         commentService.insert(comment);//这里可能出现异常，这里希望异常也给页面返回一个json结构
         //而不是直接跳转错误页面，不然的话，我们一点击，没有办法实时的去改，这样对用户比较友好
         //怎么做：在insert内层做返回jsond的处理：advice有一个同一的操作：如果：if( e instanceof CustomizeException)出现这个异常

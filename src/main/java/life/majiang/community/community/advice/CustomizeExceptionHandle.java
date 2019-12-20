@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@ControllerAdvice//先让他扫描所有
+@ControllerAdvice//先让他扫描所有（什么呢？）
 public class CustomizeExceptionHandle {
     @ExceptionHandler(Exception.class)
     ModelAndView handle(HttpServletRequest request, Throwable e , Model model,HttpServletResponse response) {
@@ -34,7 +34,6 @@ public class CustomizeExceptionHandle {
                 response.setContentType("application/json");
                 response.setStatus(200);
                 response.setCharacterEncoding("UTF-8");
-                response.setStatus(200);
                 PrintWriter writer = response.getWriter();
                 writer.write(JSON.toJSONString(resultDTO));
                 writer.close();

@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class PaginationDTO {
     private List<QuestionDTO> questions;
-    private boolean showPrevious;//显示上一页
+    private boolean showPrevious;//boolean类型，为true就 显示上一页
     private boolean showFirstPage;//显示第一页
     private boolean showNext;//显示下一页
     private boolean showEndPage;//显示最后一页

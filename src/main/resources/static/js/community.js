@@ -98,33 +98,12 @@ function collapseComments(e) {
         } else {
             //先发送请求
             $.getJSON( "/comment/"+id, function(data ) {
-                console.log(data);
+                // console.log(data);
                 //把获取的信息写到页面，data
                 //这里应该时一级评论的id，也是二级评论的整体div的标签id
 
                 $.each( data.data.reverse(), function( index,comment ) {//index,comment：下标和评论内容
-                    console.log(comment);
-
-                    //把二级评论的其他内容加入进来  这样添加标签非常麻烦
-                   /* var avatarElement = $("<img/>",{
-                        "class":"media-object-self media-object img-rounded",
-                        "src":comment.user.avatarUrl
-                        //"src":comment.user.avatarUrl
-                    });
-                    var mediaLeftElement = $("<div/>",{
-                        "class":"media-left"
-                    });
-                    mediaLeftElement.append(avatarElement);
-                    var mediaElement = $("<div/>",{
-                        "class":"media"
-                    });
-                    mediaElement.append(mediaLeftElement);
-                    var commentElement = $("<div/>",{
-                        "class":"col-lg-12 col-md-12 col-sm-12 col-xs-12 comments",
-                        html:comment.content
-                    });
-                    commentElement.append(mediaElement);*/
-
+                    // console.log(comment);
                    //左边元素
                     var mediaLeftElement = $("<div/>", {
                         "class": "media-left"
@@ -151,12 +130,11 @@ function collapseComments(e) {
                     //整体：二级评论元素
                     var mediaElement = $("<div/>",{
                         "class":"media"
-                    }).append(mediaLeftElement)
-                        .append(mediaBodyElement);
+                    }).append(mediaLeftElement).append(mediaBodyElement);
 
                     var commentElement = $("<div/>",{
                         "class":"col-lg-12 col-md-12 col-sm-12 col-xs-12 comments",
-                        html:comment.content
+                        // html:comment.content，这个要注释掉
                     }).append(mediaElement);
                    //把每条二级评论的content插入到(每次都插到头部)，加一个reverse()
                     subCommentContainer.prepend(commentElement);

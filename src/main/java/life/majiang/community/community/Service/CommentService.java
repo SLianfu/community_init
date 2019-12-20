@@ -81,6 +81,7 @@ public class CommentService {
         }
     }
 
+    //
     public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
         //拿到所有的usermapper
         CommentExample commentExample = new CommentExample();
@@ -90,6 +91,7 @@ public class CommentService {
         //怎么让时间倒叙？,这里应该是按照数据库拼接上去的
         commentExample.setOrderByClause("gmt_create desc");
 
+        //拿到评论人，根据评论的comment 的ParentId = question的id 且父类类型为问题1
         List<Comment> comments = commentMapper.selectByExample(commentExample);
 
         //拿到comments里面的commentator,去查用户信息
