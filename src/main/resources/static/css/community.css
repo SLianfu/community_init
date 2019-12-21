@@ -51,13 +51,16 @@ body {
 }
 
 .publish-tag-tab .label-info {
-    margin-right: 10px;
+    margin-right: 10px;/*-*/
+    white-space: normal;
+    margin: 5px 5px;
+    display: inline-block;
 }
 
 .community-menu {
     color: #999;
     font-size: 13px;
-    display: block;
+    /*display: block;-有换行*/
     margin-bottom: 15px;
 }
 
