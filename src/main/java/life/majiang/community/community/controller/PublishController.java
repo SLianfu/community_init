@@ -1,9 +1,11 @@
 package life.majiang.community.community.controller;
 
 import life.majiang.community.community.Service.QuestionService;
+import life.majiang.community.community.cache.TagCache;
 import life.majiang.community.community.dto.QuestionDTO;
 import life.majiang.community.community.model.Question;
 import life.majiang.community.community.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +37,7 @@ public class PublishController {
         model.addAttribute("question_id",question.getId());//把question_id传递给页面publish.html
         //要怎么传递回来呢？【在@PostMapping("/publish")接收question_id】
 
-
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -50,6 +52,9 @@ public class PublishController {
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
+
+        model.addAttribute("tags", TagCache.get());
+
         //数据校验，是否为空，前后端都要校验
         if (title == null || title == "") {
             model.addAttribute("error", "标题不能为空");
@@ -63,6 +68,14 @@ public class PublishController {
             model.addAttribute("error", "标签不能为空");
             return "publish";
         }
+
+        //invalid是过滤的非法标签
+        String invalid = TagCache.filterInvalid(tag);
+        if (StringUtils.isNoneBlank(invalid)) {
+            model.addAttribute("error", "输入非法标签:" + invalid);
+            return "publish";
+        }
+
         //拦截器那里已经把user 放入 session作用域，这里获取user来验证user是否为空【即访问/publish时】
         User user = (User) request.getSession().getAttribute("user");
 
@@ -87,7 +100,8 @@ public class PublishController {
 
 
     @GetMapping("/publish")
-    public String publish(){
+    public String publish(Model model){
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 }

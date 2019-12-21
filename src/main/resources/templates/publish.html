@@ -8,6 +8,7 @@
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/community.js"></script>
 </head>
 <body>
 <div th:insert="navigation::nav"></div>
@@ -22,7 +23,8 @@
                 <input type="hidden" name="question_id" th:value="${question_id}"><!--这样就可以把question_id通过form传递回controller-->
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）</label>
-                    <input type="text" class="form-control" th:value="${title}" id="title" name="title" placeholder="问题标题。。。">
+                    <input type="text" class="form-control" th:value="${title}" id="title" name="title"
+                           placeholder="问题标题。。。" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="title">问题补充 (必填，请参照右侧提示):</label><!--th:value="${description}"这里用text-->
@@ -30,7 +32,29 @@
                 </div>
                 <div class="form-group">
                     <label for="title">添加标签</label>
-                    <input type="text" class="form-control" id="tag" th:value="${tag}" name="tag" placeholder="输入标签，以，号分隔">
+                    <input type="text" class="form-control" id="tag" th:value="${tag}" name="tag"
+                           autocomplete="off" placeholder="输入标签，以，号分隔" onclick="showSelectTag()">
+                    <div id="select-tag" class="publish-tag-tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" th:each="selectCategory: ${tags}">
+                                <a th:href="${'#'+selectCategory.categoryName}" aria-controls="home" role="tab"
+                                   data-toggle="tab" th:text="${selectCategory.categoryName}"></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane" th:id="${selectCategory.categoryName}"
+                                 th:each="selectCategory: ${tags}">
+                                <span>
+                                    <span class="label label-info" th:each="selectTag: ${selectCategory.tags}">
+                                    <span class="glyphicon glyphicon-tags" onclick="selectTag(this)"
+                                          th:data-tag="${selectTag}"
+                                          th:text="${selectTag}">
+                                    </span>
+                                </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!--错误 提示信息-->
                 <div class="row" >

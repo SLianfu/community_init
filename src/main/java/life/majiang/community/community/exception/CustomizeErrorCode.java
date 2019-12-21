@@ -1,5 +1,7 @@
 package life.majiang.community.community.exception;
 
+import org.springframework.util.StringUtils;
+
 public enum CustomizeErrorCode implements ICustomizeErrorCode {
     QUESTION_NOT_FOUND(2001,"您的问题不存在了，要不要换个试试"),
     TARGET_PARAM_NOT_FOUND(2002,"未选中任何问题或者评论进行回复"),//现在要重新定义一个ErrorCode
